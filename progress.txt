@@ -53,3 +53,10 @@ Started: 2026-02-28
 - Each commit links to GitHub
 - **Files:** src/app/api/github/commits/route.ts, src/app/issues/page.tsx updated
 ---
+
+## 2026-02-28 21:30 - US-007
+- Content pipeline with 3 columns: Draft, Scheduled, Published
+- Postiz API integration with bearer auth
+- Post cards with platform icons, content preview, dates
+- **Files:** src/app/content/page.tsx, src/app/api/postiz/posts/route.ts
+---
