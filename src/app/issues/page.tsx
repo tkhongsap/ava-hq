@@ -1,9 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ExternalLink } from "lucide-react"
+import { ExternalLink, GitCommit } from "lucide-react"
+
+interface Commit {
+  sha: string
+  message: string
+  author: string
+  repo: string
+  date: string
+  url: string
+}
 
 interface Issue {
   number: number
@@ -23,7 +32,15 @@ interface Milestone {
 
 export default function IssuesPage() {
   const [milestones, setMilestones] = useState<Milestone[] | null>(null)
+  const [commits, setCommits] = useState<Commit[] | null>(null)
   const [error, setError] = useState(false)
+
+  const fetchCommits = useCallback(() => {
+    fetch("/api/github/commits")
+      .then((r) => r.json())
+      .then(setCommits)
+      .catch(() => setCommits([]))
+  }, [])
 
   useEffect(() => {
     fetch("/api/github/issues-by-milestone")
@@ -36,7 +53,11 @@ export default function IssuesPage() {
         setError(true)
         setMilestones([])
       })
-  }, [])
+
+    fetchCommits()
+    const interval = setInterval(fetchCommits, 60000)
+    return () => clearInterval(interval)
+  }, [fetchCommits])
 
   if (milestones === null) {
     return (
@@ -122,6 +143,40 @@ export default function IssuesPage() {
           )
         })}
       </div>
+
+      {/* Recent Commits */}
+      <h3 className="text-xl font-bold tracking-tight mt-8 mb-4">Recent Commits</h3>
+      {commits === null ? (
+        <Skeleton className="h-48" />
+      ) : (
+        <Card>
+          <CardContent className="p-4">
+            <div className="space-y-3">
+              {commits.map((c) => (
+                <div key={`${c.repo}-${c.sha}`} className="flex items-start gap-3 text-sm">
+                  <GitCommit className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <a
+                      href={c.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline font-medium truncate block"
+                    >
+                      {c.message}
+                    </a>
+                    <p className="text-xs text-muted-foreground">
+                      {c.author} · {c.repo} · {c.sha} · {new Date(c.date).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              {commits.length === 0 && (
+                <p className="text-muted-foreground text-sm">No commits found.</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

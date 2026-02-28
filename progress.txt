@@ -46,3 +46,10 @@ Started: 2026-02-28
 - Supports multi-repo via GITHUB_REPOS env var
 - **Files:** src/app/issues/page.tsx, src/app/api/github/issues-by-milestone/route.ts
 ---
+
+## 2026-02-28 21:25 - US-006
+- Recent commits API route fetches from all configured repos, returns top 20 sorted by date
+- Commits section added to Issues page with auto-refresh every 60s
+- Each commit links to GitHub
+- **Files:** src/app/api/github/commits/route.ts, src/app/issues/page.tsx updated
+---
