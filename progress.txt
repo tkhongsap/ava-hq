@@ -1,3 +1,14 @@
 # Ralph Progress Log
 Started: 2026-02-28
 ---
+
+## 2026-02-28 21:00 - US-001
+- Initialized Next.js 14 with App Router, TypeScript, Tailwind CSS
+- Installed Shadcn/UI with dark theme (zinc palette, CSS variables)
+- Created sidebar navigation (Dashboard, Agents, Issues, Content, Health) — collapsible on mobile
+- Created .env.example with all required vars
+- Created multi-stage Dockerfile and docker-compose.yml
+- Typecheck passes, build succeeds
+- **Files:** layout.tsx, page.tsx, globals.css, sidebar.tsx, button.tsx, utils.ts, tailwind.config.ts, next.config.mjs, .env.example, Dockerfile, docker-compose.yml, components.json
+- **Learnings:** create-next-app won't run in a dir with existing files; scaffold in temp dir and copy
+---

@@ -18,7 +18,7 @@
         "npm run build succeeds"
       ],
       "priority": 1,
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -104,7 +104,7 @@
     {
       "id": "US-007",
       "title": "Content pipeline view (Postiz integration)",
-      "description": "As the owner, I want to see my content pipeline — drafts, scheduled, and published posts.",
+      "description": "As the owner, I want to see my content pipeline \u2014 drafts, scheduled, and published posts.",
       "acceptanceCriteria": [
         "API route that fetches posts from Postiz API",
         "Three columns: Draft | Scheduled | Published",
