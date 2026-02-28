@@ -1,36 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { jwtVerify } from "jose"
 
-const SECRET = new TextEncoder().encode(
-  process.env.AUTH_PASSWORD_HASH || "dev-secret-change-me"
-)
-
-const PUBLIC_PATHS = ["/login", "/api/auth"]
-
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  // Allow public paths and static assets
-  if (
-    PUBLIC_PATHS.some((p) => pathname.startsWith(p)) ||
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon")
-  ) {
-    return NextResponse.next()
-  }
-
-  const token = request.cookies.get("session")?.value
-
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url))
-  }
-
-  try {
-    await jwtVerify(token, SECRET)
-    return NextResponse.next()
-  } catch {
-    return NextResponse.redirect(new URL("/login", request.url))
-  }
+// Auth temporarily disabled — allow all requests
+export async function middleware(_request: NextRequest) {
+  return NextResponse.next()
 }
 
 export const config = {
