@@ -22,3 +22,12 @@ Started: 2026-02-28
 - Sidebar hidden on login page
 - **Files:** src/lib/auth.ts, src/middleware.ts, src/app/login/page.tsx, src/app/api/auth/route.ts, sidebar.tsx updated
 ---
+
+## 2026-02-28 21:10 - US-003
+- Dashboard with 4 summary cards: Total Agents, Active Issues, Pending Drafts, Published Posts
+- API routes for GitHub issues count and Postiz stats
+- GitHub App auth lib (JWT → installation token)
+- Loading skeletons, error states
+- Responsive grid layout
+- **Files:** page.tsx, api/github/issues/route.ts, api/postiz/stats/route.ts, lib/github.ts, ui/card.tsx, ui/skeleton.tsx
+---
