@@ -68,3 +68,11 @@ Started: 2026-02-28
 - Health API endpoint at /api/health
 - **Files:** src/app/health/page.tsx, src/app/api/health/route.ts
 ---
+
+## 2026-02-28 21:40 - US-009
+- GitHub Actions workflow: build and push Docker image to GHCR on push to main
+- docker-compose.yml with healthcheck
+- Caddy proxy config commented (ready to enable)
+- Health check endpoint at /api/health already implemented in US-008
+- **Files:** .github/workflows/deploy.yml, docker-compose.yml updated
+---
