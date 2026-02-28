@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Main",
+    "role": "Orchestrator",
+    "description": "Routes tasks to the right agent, manages workflow",
+    "model": "claude-opus-4",
+    "status": "active",
+    "icon": "brain"
+  },
+  {
+    "name": "Builder",
+    "role": "Software Engineer",
+    "description": "Writes code, reviews PRs, fixes bugs, manages CI/CD",
+    "model": "claude-opus-4",
+    "status": "active",
+    "icon": "hammer"
+  },
+  {
+    "name": "Content",
+    "role": "Content Creator",
+    "description": "Drafts social posts, manages content pipeline via Postiz",
+    "model": "claude-sonnet",
+    "status": "active",
+    "icon": "pen-tool"
+  },
+  {
+    "name": "DocParser",
+    "role": "Document Analyst",
+    "description": "Parses and analyzes documents, extracts structured data",
+    "model": "claude-sonnet",
+    "status": "idle",
+    "icon": "file-search"
+  }
+]

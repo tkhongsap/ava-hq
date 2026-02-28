@@ -31,3 +31,10 @@ Started: 2026-02-28
 - Responsive grid layout
 - **Files:** page.tsx, api/github/issues/route.ts, api/postiz/stats/route.ts, lib/github.ts, ui/card.tsx, ui/skeleton.tsx
 ---
+
+## 2026-02-28 21:15 - US-004
+- Agent status panel with 4 agents (Main, Builder, Content, DocParser)
+- Data loaded from public/agents.json config file
+- Cards with icons, role, description, model, status indicator
+- **Files:** src/app/agents/page.tsx, public/agents.json
+---
