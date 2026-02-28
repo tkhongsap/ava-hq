@@ -60,3 +60,11 @@ Started: 2026-02-28
 - Post cards with platform icons, content preview, dates
 - **Files:** src/app/content/page.tsx, src/app/api/postiz/posts/route.ts
 ---
+
+## 2026-02-28 21:35 - US-008
+- System health panel with 3 checks: Postiz API, GitHub API, DNS for hq.tkhongsap.io
+- Green/yellow/red status indicators with timestamps
+- Manual refresh button
+- Health API endpoint at /api/health
+- **Files:** src/app/health/page.tsx, src/app/api/health/route.ts
+---
