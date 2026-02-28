@@ -38,3 +38,11 @@ Started: 2026-02-28
 - Cards with icons, role, description, model, status indicator
 - **Files:** src/app/agents/page.tsx, public/agents.json
 ---
+
+## 2026-02-28 21:20 - US-005
+- GitHub issues view grouped by milestone
+- API route fetches from all configured repos
+- Progress bar per milestone, label badges, external links
+- Supports multi-repo via GITHUB_REPOS env var
+- **Files:** src/app/issues/page.tsx, src/app/api/github/issues-by-milestone/route.ts
+---
