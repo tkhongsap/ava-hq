@@ -12,3 +12,13 @@ Started: 2026-02-28
 - **Files:** layout.tsx, page.tsx, globals.css, sidebar.tsx, button.tsx, utils.ts, tailwind.config.ts, next.config.mjs, .env.example, Dockerfile, docker-compose.yml, components.json
 - **Learnings:** create-next-app won't run in a dir with existing files; scaffold in temp dir and copy
 ---
+
+## 2026-02-28 21:05 - US-002
+- Login page with password input
+- JWT-based session cookie (24hr expiry) via jose
+- Middleware redirects unauthenticated users to /login
+- API route for login (POST) and logout (DELETE)
+- Logout button in sidebar
+- Sidebar hidden on login page
+- **Files:** src/lib/auth.ts, src/middleware.ts, src/app/login/page.tsx, src/app/api/auth/route.ts, sidebar.tsx updated
+---

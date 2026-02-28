@@ -12,6 +12,7 @@ import {
   HeartPulse,
   Menu,
   X,
+  LogOut,
 } from "lucide-react"
 
 const navItems = [
@@ -25,6 +26,13 @@ const navItems = [
 export function Sidebar() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+
+  if (pathname === "/login") return null
+
+  async function handleLogout() {
+    await fetch("/api/auth", { method: "DELETE" })
+    window.location.href = "/login"
+  }
 
   return (
     <>
@@ -79,7 +87,14 @@ export function Sidebar() {
           })}
         </nav>
 
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border space-y-2">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground w-full"
+          >
+            <LogOut size={18} />
+            Logout
+          </button>
           <p className="text-xs text-muted-foreground">Ava HQ v0.1.0</p>
         </div>
       </aside>
