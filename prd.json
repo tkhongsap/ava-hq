@@ -1,151 +1,123 @@
 {
-  "project": "Ava HQ",
+  "project": "Ava HQ — Virtual Office",
   "branchName": "ralph/core-dashboard",
-  "description": "Core dashboard with agent status, GitHub integration, content pipeline, and system health",
+  "description": "Add a pixel-art virtual office Team Activity page to the existing Ava HQ dashboard, showing agent workstations, real-time status, and a 76-hour activity ticker.",
   "userStories": [
     {
       "id": "US-001",
-      "title": "Project scaffolding with Next.js + Tailwind + Shadcn",
-      "description": "As a developer, I need the base project set up so all future stories have a foundation to build on.",
+      "title": "Activity API endpoint",
+      "description": "As the owner, I need a backend API that returns agent status and activity history so the Team page has data to display.",
       "acceptanceCriteria": [
-        "Next.js 14 with App Router initialized",
-        "Tailwind CSS configured",
-        "Shadcn/UI installed with dark theme as default",
-        "Layout with sidebar navigation and main content area",
-        "Environment variables setup (.env.example with all required vars)",
-        "Dockerfile and docker-compose.yml for deployment",
-        "Typecheck passes",
-        "npm run build succeeds"
+        "GET /api/activity returns JSON matching TeamOverviewResponse schema (agents[], events[], stats, serverTime)",
+        "Scans /data/.openclaw/agents/*/sessions/*.jsonl for session data",
+        "Detects active sessions (modified within last 5 minutes) vs completed",
+        "Maps sessions to agents: main→ava, builder→builder, content→content, atlas→atlas",
+        "Returns events sorted newest-first, filtered by 'hours' query param (default 76)",
+        "Stats object includes completed, running, failed counts and avgDurationMs",
+        "Returns empty arrays gracefully if no session files exist",
+        "Typecheck passes"
       ],
       "priority": 1,
-      "passes": true,
-      "notes": ""
+      "passes": false,
+      "notes": "Session transcripts are JSONL files. First user message in each file identifies the task. File mtime indicates last activity. Agent ID is in the directory path: /data/.openclaw/agents/{agentId}/sessions/{sessionId}.jsonl"
     },
     {
       "id": "US-002",
-      "title": "Simple password authentication",
-      "description": "As the owner, I want the dashboard protected by a password so only I can access it.",
+      "title": "Page shell with header and Team Status panel",
+      "description": "As the owner, I want a Team Activity page with a live clock and a left-side status panel showing each agent's current state.",
       "acceptanceCriteria": [
-        "Login page with password input",
-        "Password stored as hashed env variable (AUTH_PASSWORD_HASH)",
-        "Session cookie set on successful login (24hr expiry)",
-        "All routes redirect to login if not authenticated",
-        "Logout button in sidebar",
+        "New page at /activity/page.tsx renders within existing Ava HQ layout",
+        "Page header shows 'Team Activity' title (text-2xl font-bold) and a live clock (HH:MM:SS, updates every second, monospace font)",
+        "Refresh button next to clock that re-fetches API data",
+        "Left panel (w-64) shows agent list: each agent has a colored status dot (green=working, yellow=idle, red=error), name in uppercase, role badge text, current task truncated to 40 chars, and duration if working",
+        "Filter toggle buttons at top of panel: ALL, WORKING, IDLE — clicking filters the agent list",
+        "Stats block at bottom of panel: Completed, Running, Failed, Avg Duration in monospace",
+        "Loading skeleton state while API fetches",
+        "Error state if API fails",
+        "Data fetched from /api/activity on mount and every 30 seconds",
         "Typecheck passes"
       ],
       "priority": 2,
-      "passes": true,
-      "notes": ""
+      "passes": false,
+      "notes": "Follow exact same patterns as other Ava HQ pages: useEffect + fetch + useState + Skeleton. The page background should be the standard bg-background from the existing theme."
     },
     {
       "id": "US-003",
-      "title": "Dashboard homepage with summary cards",
-      "description": "As the owner, I want to see a high-level overview when I open HQ.",
+      "title": "CSS pixel art avatars",
+      "description": "As the owner, I want each agent to have a unique pixel art avatar rendered in pure CSS so the office feels alive and personal.",
       "acceptanceCriteria": [
-        "Summary cards showing: Total agents (4), Active issues count, Pending content drafts, Published posts count",
-        "Cards fetch real data from GitHub and Postiz APIs",
-        "Loading skeletons while data fetches",
-        "Error states if APIs are unreachable",
-        "Responsive layout (mobile + desktop)",
+        "PixelAvatar component at src/components/pixel-avatar.tsx",
+        "Renders a pixel character using CSS Grid (10x10 grid of colored cells)",
+        "4 unique designs: Ava (warm tones, headset), Builder (blue tones, hoodie), Content (purple tones, beret), Atlas (green tones, glasses)",
+        "Each avatar displayed at 64x64px (each cell ~6.4px)",
+        "Accepts 'status' prop: 'working' shows subtle pulse animation (CSS keyframes), 'idle' shows slightly reduced opacity (0.7), 'error' shows red tint overlay",
+        "Accepts 'agent' prop to select which design to render",
+        "Component is pure CSS — no external image assets, no canvas, no SVG",
         "Typecheck passes"
       ],
       "priority": 3,
-      "passes": true,
-      "notes": ""
+      "passes": false,
+      "notes": "Use a 2D array of hex color strings to define each avatar. Empty cells use 'transparent'. The grid container uses CSS Grid with grid-template-columns: repeat(10, 1fr) and aspect-ratio: 1."
     },
     {
       "id": "US-004",
-      "title": "Agent status panel",
-      "description": "As the owner, I want to see which agents exist and their basic info.",
+      "title": "Office floor plan with agent rooms",
+      "description": "As the owner, I want to see an office floor plan where each agent has their own room with desk items, and idle agents appear in the Break Room.",
       "acceptanceCriteria": [
-        "Panel showing 4 agents: Main (Orchestrator), Builder, Content, DocParser",
-        "Each agent card shows: name, role description, model, status indicator",
-        "Agent data loaded from a config file (agents.json) not hardcoded in components",
-        "Clean card layout with icons per agent type",
-        "Typecheck passes"
+        "Office floor takes the main area (right of Team Status panel)",
+        "CSS Grid layout: 2x2 grid of agent rooms at top, Break Room (full width) below, Conference Room (full width) at bottom",
+        "Each agent room has: colored header bar (warm brown=Ava, blue=Builder, purple=Content, green=Atlas), agent name + role badge in pixel font, status dot, PixelAvatar component, emoji desk items row",
+        "Working agents: avatar at their desk with a speech bubble showing current task text (max 50 chars, CSS speech bubble with triangle pointer)",
+        "Idle agents: their desk room shows an empty chair emoji (🪑), avatar moves to Break Room",
+        "Break Room shows: ☕🍕🛋 decorations + all idle agent avatars in a row with their names below",
+        "Conference Room shows: 🪑🪑🪑 and text '(No active collaborations)' — placeholder for future feature",
+        "Error agents: room card border pulses red (CSS animation)",
+        "Google Font 'Press Start 2P' imported and used for room labels, agent names, and status badges only (NOT for body text)",
+        "Room cards use border and subtle shadow consistent with existing Card component styling",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
       ],
       "priority": 4,
-      "passes": true,
-      "notes": ""
+      "passes": false,
+      "notes": "Import Press Start 2P via next/font/google (same pattern as Inter in layout.tsx). Room colors should be applied as background-color with low opacity (e.g., bg-orange-950/30 for Ava) to stay readable on dark theme. Speech bubble is a simple div with relative positioning and a CSS triangle ::after pseudo-element."
     },
     {
       "id": "US-005",
-      "title": "GitHub issues view by milestone",
-      "description": "As the owner, I want to see GitHub issues organized by milestone so I can track project progress.",
+      "title": "Activity ticker bar",
+      "description": "As the owner, I want a scrolling ticker at the bottom showing recent activity events so I can see what happened at a glance.",
       "acceptanceCriteria": [
-        "API route that fetches issues from GitHub API for a configurable repo",
-        "Issues grouped by milestone (Phase 1, Phase 2, Phase 3)",
-        "Each issue shows: title, number, state (open/closed), labels",
-        "Progress bar per milestone (X of Y closed)",
-        "Click issue title opens GitHub issue in new tab",
-        "Supports multiple repos (configurable via env: GITHUB_REPOS=owner/repo1,owner/repo2)",
+        "Full-width bar fixed at bottom of the Team Activity page (not global — only on /activity)",
+        "Shows last 20 events from the API as a horizontally scrolling ticker",
+        "Each event shows: timestamp (HH:MM), agent name, message — separated by ' • '",
+        "Color coding: green text for 'complete' events, yellow for 'start', red for 'error', gray for 'info'",
+        "Auto-scrolls right-to-left using CSS animation (40s duration, linear, infinite)",
+        "Pauses animation on hover (CSS :hover pause)",
+        "Timestamp text uses monospace font",
+        "Empty state: shows 'No activity in the last 76 hours' centered",
         "Typecheck passes"
       ],
       "priority": 5,
-      "passes": true,
-      "notes": ""
+      "passes": false,
+      "notes": "Use CSS @keyframes with translateX for scrolling. The ticker content is duplicated (rendered twice) so the scroll loops seamlessly. Ticker bar has bg-card border-t border-border to match existing theme."
     },
     {
       "id": "US-006",
-      "title": "GitHub recent commits view",
-      "description": "As the owner, I want to see recent commits to track what Builder is shipping.",
+      "title": "Sidebar integration and responsive polish",
+      "description": "As the owner, I want the Team page accessible from the sidebar and working well on mobile.",
       "acceptanceCriteria": [
-        "API route that fetches recent commits from configured repos",
-        "Shows last 20 commits across all configured repos",
-        "Each commit shows: message, author, repo, date, short SHA",
-        "Click commit opens on GitHub in new tab",
-        "Auto-refreshes every 60 seconds",
-        "Typecheck passes"
+        "New nav item in sidebar.tsx: { href: '/activity', label: 'Team', icon: Users } — positioned after Health",
+        "Users icon imported from lucide-react",
+        "On mobile (< md breakpoint): office grid stacks to single column (1 room per row)",
+        "On mobile: Team Status panel moves above the office grid (not side-by-side)",
+        "Activity ticker remains full-width on mobile",
+        "Page loads and displays correctly at /activity",
+        "All existing pages still work (no regressions)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
       ],
       "priority": 6,
-      "passes": true,
-      "notes": ""
-    },
-    {
-      "id": "US-007",
-      "title": "Content pipeline view (Postiz integration)",
-      "description": "As the owner, I want to see my content pipeline \u2014 drafts, scheduled, and published posts.",
-      "acceptanceCriteria": [
-        "API route that fetches posts from Postiz API",
-        "Three columns: Draft | Scheduled | Published",
-        "Each post card shows: content preview (first 100 chars), platform icon (X/LinkedIn), scheduled date, status",
-        "Click post opens in Postiz if URL available",
-        "Typecheck passes"
-      ],
-      "priority": 7,
-      "passes": true,
-      "notes": ""
-    },
-    {
-      "id": "US-008",
-      "title": "System health panel",
-      "description": "As the owner, I want to see if critical systems are running properly.",
-      "acceptanceCriteria": [
-        "Health checks for: Postiz API reachable, GitHub API reachable, DNS resolution for hq.tkhongsap.io",
-        "Green/yellow/red status indicators",
-        "Last checked timestamp",
-        "Manual refresh button",
-        "Typecheck passes"
-      ],
-      "priority": 8,
-      "passes": true,
-      "notes": ""
-    },
-    {
-      "id": "US-009",
-      "title": "Docker deployment and CI",
-      "description": "As the owner, I want the app to auto-deploy when code is pushed to main.",
-      "acceptanceCriteria": [
-        "Dockerfile builds a production Next.js image",
-        "docker-compose.yml with environment variables",
-        "GitHub Actions workflow: on push to main -> build and push Docker image",
-        "Container runs on port 3000, Caddy proxies from 3100",
-        "Health check endpoint at /api/health",
-        "Typecheck passes"
-      ],
-      "priority": 9,
-      "passes": true,
-      "notes": ""
+      "passes": false,
+      "notes": "Use responsive Tailwind classes: flex-col md:flex-row for the main layout, grid-cols-1 md:grid-cols-2 for the room grid. Test sidebar active state highlights correctly on /activity."
     }
   ]
 }
