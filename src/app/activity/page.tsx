@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { RefreshCw } from "lucide-react"
 import { PixelAvatar } from "@/components/pixel-avatar"
+import { ActivityTicker } from "@/components/activity-ticker"
 
 const pixelFont = Press_Start_2P({ weight: "400", subsets: ["latin"] })
 
@@ -418,6 +419,9 @@ export default function ActivityPage() {
           </div>
         </div>
       )}
+
+      {/* Activity Ticker */}
+      {data && <ActivityTicker events={data.events} />}
     </div>
   )
 }
