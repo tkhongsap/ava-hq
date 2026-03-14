@@ -76,3 +76,65 @@ Started: 2026-02-28
 - Health check endpoint at /api/health already implemented in US-008
 - **Files:** .github/workflows/deploy.yml, docker-compose.yml updated
 ---
+
+## 2026-03-14 22:42 - US-001 (Team Activity PRD)
+- Created GET /api/activity endpoint at src/app/api/activity/route.ts
+- Scans /data/.openclaw/agents/*/sessions/*.jsonl for session data
+- Detects active sessions (mtime < 5 min), parses first user message as task
+- Maps agents: main→Ava, builder→Builder, content→Content, atlas→Atlas
+- Returns TeamOverviewResponse: agents[], events[], stats, serverTime
+- Supports `hours` query param (default 76)
+- **Files:** src/app/api/activity/route.ts
+---
+
+## 2026-03-14 22:43 - US-002 (Team Activity PRD)
+- Created /activity/page.tsx with full page shell
+- Live clock (HH:MM:SS, updates every second, monospace)
+- Refresh button with spinner animation
+- Left panel (w-64): agent list with status dots, name, role badge, current task (40 char truncate), duration
+- Filter toggles: ALL, WORKING, IDLE
+- Stats block: completed, running, failed, avg duration (monospace)
+- Loading skeleton + error states
+- Auto-refresh every 30s via setInterval
+- **Files:** src/app/activity/page.tsx
+---
+
+## 2026-03-14 22:44 - US-003 (Team Activity PRD)
+- Created PixelAvatar component at src/components/pixel-avatar.tsx
+- Pure CSS pixel art using 10x10 CSS Grid of colored cells
+- 4 unique designs: Ava (warm/headset), Builder (blue/hoodie), Content (purple/beret), Atlas (green/glasses)
+- Status props: working=pulse animation, idle=opacity 0.7, error=red overlay
+- 64x64px default size, configurable via size prop
+- **Files:** src/components/pixel-avatar.tsx
+---
+
+## 2026-03-14 22:45 - US-004 (Team Activity PRD)
+- Built office floor plan with 2x2 agent room grid + Break Room + Conference Room
+- Each room: colored header bar, pixel font labels, status dot, PixelAvatar, emoji desk items
+- Working agents: avatar at desk with CSS speech bubble showing current task
+- Idle agents: empty chair at desk, avatar moves to Break Room
+- Error agents: room card pulses red
+- Press Start 2P font imported via next/font/google
+- Warm room colors: orange-950/30 (Ava), blue-950/30 (Builder), purple-950/30 (Content), green-950/30 (Atlas)
+- **Files:** src/app/activity/page.tsx updated
+---
+
+## 2026-03-14 22:46 - US-005 (Team Activity PRD)
+- Created ActivityTicker component at src/components/activity-ticker.tsx
+- Full-width bar at bottom of activity page with bg-card border-t
+- Shows last 20 events: HH:MM • AgentName • message
+- Color coded: green=complete, yellow=start, red=error, gray=info
+- CSS animation: translateX scroll, 40s duration, linear, infinite
+- Pauses on hover via :hover animation-play-state: paused
+- Content duplicated for seamless loop
+- Empty state: "No activity in the last 76 hours"
+- **Files:** src/components/activity-ticker.tsx, src/app/activity/page.tsx updated
+---
+
+## 2026-03-14 22:47 - US-006 (Team Activity PRD)
+- Added Team nav item to sidebar after Health: { href: '/activity', label: 'Team', icon: Users }
+- Imported Users icon from lucide-react
+- Responsive already built into US-002/US-004: flex-col md:flex-row layout, grid-cols-1 md:grid-cols-2 room grid
+- All typecheck passes, no regressions
+- **Files:** src/components/sidebar.tsx updated
+---

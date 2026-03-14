@@ -18,7 +18,7 @@
         "Typecheck passes"
       ],
       "priority": 1,
-      "passes": false,
+      "passes": true,
       "notes": "Session transcripts are JSONL files. First user message in each file identifies the task. File mtime indicates last activity. Agent ID is in the directory path: /data/.openclaw/agents/{agentId}/sessions/{sessionId}.jsonl"
     },
     {
@@ -38,7 +38,7 @@
         "Typecheck passes"
       ],
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "notes": "Follow exact same patterns as other Ava HQ pages: useEffect + fetch + useState + Skeleton. The page background should be the standard bg-background from the existing theme."
     },
     {
@@ -56,7 +56,7 @@
         "Typecheck passes"
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "notes": "Use a 2D array of hex color strings to define each avatar. Empty cells use 'transparent'. The grid container uses CSS Grid with grid-template-columns: repeat(10, 1fr) and aspect-ratio: 1."
     },
     {
@@ -78,7 +78,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 4,
-      "passes": false,
+      "passes": true,
       "notes": "Import Press Start 2P via next/font/google (same pattern as Inter in layout.tsx). Room colors should be applied as background-color with low opacity (e.g., bg-orange-950/30 for Ava) to stay readable on dark theme. Speech bubble is a simple div with relative positioning and a CSS triangle ::after pseudo-element."
     },
     {
@@ -97,7 +97,7 @@
         "Typecheck passes"
       ],
       "priority": 5,
-      "passes": false,
+      "passes": true,
       "notes": "Use CSS @keyframes with translateX for scrolling. The ticker content is duplicated (rendered twice) so the scroll loops seamlessly. Ticker bar has bg-card border-t border-border to match existing theme."
     },
     {
@@ -116,7 +116,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 6,
-      "passes": false,
+      "passes": true,
       "notes": "Use responsive Tailwind classes: flex-col md:flex-row for the main layout, grid-cols-1 md:grid-cols-2 for the room grid. Test sidebar active state highlights correctly on /activity."
     }
   ]
