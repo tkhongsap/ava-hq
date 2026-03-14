@@ -1,10 +1,14 @@
 "use client"
 
 import { useEffect, useState, useCallback, useRef } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Press_Start_2P } from "next/font/google"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { RefreshCw } from "lucide-react"
+import { PixelAvatar } from "@/components/pixel-avatar"
+
+const pixelFont = Press_Start_2P({ weight: "400", subsets: ["latin"] })
 
 interface AgentStatus {
   id: string
@@ -46,6 +50,29 @@ const statusColors: Record<string, string> = {
   offline: "bg-gray-500",
 }
 
+const roomColors: Record<string, string> = {
+  main: "bg-orange-950/30",
+  builder: "bg-blue-950/30",
+  content: "bg-purple-950/30",
+  atlas: "bg-green-950/30",
+}
+
+const roomHeaderColors: Record<string, string> = {
+  main: "bg-orange-900/60",
+  builder: "bg-blue-900/60",
+  content: "bg-purple-900/60",
+  atlas: "bg-green-900/60",
+}
+
+const deskItems: Record<string, string> = {
+  main: "🖥🖥🖥 ☕ 📋",
+  builder: "💻 ⌨️ 🥤 ⚙️",
+  content: "📱 📝 🎨 ✏️",
+  atlas: "📊 🌐 📈 🔍",
+}
+
+type AgentIdType = "main" | "builder" | "content" | "atlas"
+
 function formatDuration(ms: number): string {
   const seconds = Math.floor(ms / 1000)
   const minutes = Math.floor(seconds / 60)
@@ -69,6 +96,152 @@ function LiveClock() {
   }, [])
 
   return <span className="font-mono text-sm text-muted-foreground">{time}</span>
+}
+
+function SpeechBubble({ text }: { text: string }) {
+  return (
+    <div className="relative bg-card border border-border rounded px-2 py-1 mt-2 text-[10px] text-muted-foreground max-w-[180px]">
+      <div className="absolute -top-1.5 left-4 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[6px] border-b-border" />
+      <div className="absolute -top-1 left-4 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[6px] border-b-card" />
+      {text.slice(0, 50)}
+    </div>
+  )
+}
+
+function AgentRoom({ agent, pixelFontClass }: { agent: AgentStatus; pixelFontClass: string }) {
+  const isWorking = agent.status === "working"
+  const isError = agent.status === "error"
+  const isIdle = agent.status === "idle" || agent.status === "offline"
+
+  return (
+    <Card
+      className={`overflow-hidden ${roomColors[agent.id] || ""} ${
+        isError ? "animate-pulse border-red-500/50" : ""
+      }`}
+    >
+      {/* Room header */}
+      <div
+        className={`px-3 py-2 flex items-center gap-2 ${roomHeaderColors[agent.id] || ""}`}
+      >
+        <div
+          className={`h-2 w-2 rounded-full shrink-0 ${statusColors[agent.status]}`}
+        />
+        <span className={`${pixelFontClass} text-[8px] uppercase`}>
+          {agent.name}
+        </span>
+        <span
+          className={`${pixelFontClass} text-[6px] px-1 py-0.5 rounded bg-muted/50 text-muted-foreground`}
+        >
+          {agent.role}
+        </span>
+      </div>
+
+      {/* Room body */}
+      <div className="p-4 flex flex-col items-center min-h-[140px] justify-center">
+        {isWorking || isError ? (
+          <>
+            <PixelAvatar
+              agent={agent.id as AgentIdType}
+              status={agent.status}
+              size={64}
+            />
+            {agent.currentTask && <SpeechBubble text={agent.currentTask} />}
+          </>
+        ) : (
+          <div className="text-2xl">🪑</div>
+        )}
+        <div className="mt-3 text-sm tracking-wider">{deskItems[agent.id]}</div>
+      </div>
+    </Card>
+  )
+}
+
+function BreakRoom({
+  idleAgents,
+  pixelFontClass,
+}: {
+  idleAgents: AgentStatus[]
+  pixelFontClass: string
+}) {
+  return (
+    <Card className="overflow-hidden bg-amber-950/20">
+      <div className="px-3 py-2 bg-amber-900/40">
+        <span className={`${pixelFontClass} text-[8px] uppercase`}>
+          Break Room
+        </span>
+        <span className="ml-3 text-sm">☕🍕🛋</span>
+      </div>
+      <div className="p-4 flex items-center gap-6 min-h-[80px] flex-wrap">
+        {idleAgents.length === 0 ? (
+          <p className="text-xs text-muted-foreground">Everyone&apos;s at work!</p>
+        ) : (
+          idleAgents.map((agent) => (
+            <div key={agent.id} className="flex flex-col items-center gap-1">
+              <PixelAvatar
+                agent={agent.id as AgentIdType}
+                status="idle"
+                size={48}
+              />
+              <span className={`${pixelFontClass} text-[6px] text-muted-foreground`}>
+                {agent.name}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+    </Card>
+  )
+}
+
+function ConferenceRoom({ pixelFontClass }: { pixelFontClass: string }) {
+  return (
+    <Card className="overflow-hidden bg-zinc-900/30">
+      <div className="px-3 py-2 bg-zinc-800/40">
+        <span className={`${pixelFontClass} text-[8px] uppercase`}>
+          Conference Room
+        </span>
+        <span className="ml-3 text-sm">🪑🪑🪑</span>
+      </div>
+      <div className="p-4 min-h-[60px] flex items-center justify-center">
+        <p className="text-xs text-muted-foreground">
+          (No active collaborations)
+        </p>
+      </div>
+    </Card>
+  )
+}
+
+function OfficeFloor({
+  agents,
+  pixelFontClass,
+}: {
+  agents: AgentStatus[]
+  pixelFontClass: string
+}) {
+  const idleAgents = agents.filter(
+    (a) => a.status === "idle" || a.status === "offline"
+  )
+
+  return (
+    <div className="space-y-3">
+      {/* Agent rooms - 2x2 grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {agents.map((agent) => (
+          <AgentRoom
+            key={agent.id}
+            agent={agent}
+            pixelFontClass={pixelFontClass}
+          />
+        ))}
+      </div>
+
+      {/* Break Room */}
+      <BreakRoom idleAgents={idleAgents} pixelFontClass={pixelFontClass} />
+
+      {/* Conference Room */}
+      <ConferenceRoom pixelFontClass={pixelFontClass} />
+    </div>
+  )
 }
 
 export default function ActivityPage() {
@@ -141,8 +314,8 @@ export default function ActivityPage() {
 
       {/* Loading state */}
       {!data && !error && (
-        <div className="flex gap-4">
-          <div className="w-64 space-y-3">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="w-full md:w-64 space-y-3">
             <Skeleton className="h-8" />
             {[1, 2, 3, 4].map((i) => (
               <Skeleton key={i} className="h-20" />
@@ -236,13 +409,12 @@ export default function ActivityPage() {
             </Card>
           </div>
 
-          {/* Right side - placeholder for office floor (US-004) */}
+          {/* Right side - Office Floor */}
           <div className="flex-1">
-            <Card className="p-6 min-h-[400px] flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">
-                Office floor plan loading...
-              </p>
-            </Card>
+            <OfficeFloor
+              agents={data.agents}
+              pixelFontClass={pixelFont.className}
+            />
           </div>
         </div>
       )}
