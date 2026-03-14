@@ -10,6 +10,7 @@ import {
   CircleDot,
   FileText,
   HeartPulse,
+  Users,
   Menu,
   X,
   LogOut,
@@ -21,6 +22,7 @@ const navItems = [
   { href: "/issues", label: "Issues", icon: CircleDot },
   { href: "/content", label: "Content", icon: FileText },
   { href: "/health", label: "Health", icon: HeartPulse },
+  { href: "/activity", label: "Team", icon: Users },
 ]
 
 export function Sidebar() {
