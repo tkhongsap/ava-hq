@@ -112,8 +112,6 @@ function SpeechBubble({ text }: { text: string }) {
 function AgentRoom({ agent, pixelFontClass }: { agent: AgentStatus; pixelFontClass: string }) {
   const isWorking = agent.status === "working"
   const isError = agent.status === "error"
-  const isIdle = agent.status === "idle" || agent.status === "offline"
-
   return (
     <Card
       className={`overflow-hidden ${roomColors[agent.id] || ""} ${

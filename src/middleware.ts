@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 
 // Auth temporarily disabled — allow all requests
-export async function middleware(_request: NextRequest) {
+export async function middleware() {
   return NextResponse.next()
 }
 
