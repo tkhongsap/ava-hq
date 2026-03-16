@@ -8,48 +8,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { RefreshCw } from "lucide-react"
 import { PixelAvatar } from "@/components/pixel-avatar"
 import { ActivityTicker } from "@/components/activity-ticker"
+import type { AgentStatus, TeamOverviewResponse, AgentId, FilterMode } from "@/types/activity"
+import { STATUS_COLORS } from "@/types/activity"
 
 const pixelFont = Press_Start_2P({ weight: "400", subsets: ["latin"] })
-
-interface AgentStatus {
-  id: string
-  name: string
-  role: string
-  status: "working" | "idle" | "error" | "offline"
-  currentTask?: string
-  location: "desk" | "breakroom" | "conference"
-  lastActive: string
-}
-
-interface ActivityEvent {
-  id: string
-  timestamp: string
-  agent: string
-  type: "start" | "complete" | "error" | "info"
-  message: string
-  durationMs?: number
-}
-
-interface TeamOverviewResponse {
-  agents: AgentStatus[]
-  events: ActivityEvent[]
-  stats: {
-    completed: number
-    running: number
-    failed: number
-    avgDurationMs: number
-  }
-  serverTime: string
-}
-
-type FilterMode = "ALL" | "WORKING" | "IDLE"
-
-const statusColors: Record<string, string> = {
-  working: "bg-green-500",
-  idle: "bg-yellow-500",
-  error: "bg-red-500",
-  offline: "bg-gray-500",
-}
 
 const roomColors: Record<string, string> = {
   main: "bg-orange-950/30",
@@ -72,7 +34,6 @@ const deskItems: Record<string, string> = {
   atlas: "📊 🌐 📈 🔍",
 }
 
-type AgentIdType = "main" | "builder" | "content" | "atlas"
 
 function formatDuration(ms: number): string {
   const seconds = Math.floor(ms / 1000)
@@ -123,7 +84,7 @@ function AgentRoom({ agent, pixelFontClass }: { agent: AgentStatus; pixelFontCla
         className={`px-3 py-2 flex items-center gap-2 ${roomHeaderColors[agent.id] || ""}`}
       >
         <div
-          className={`h-2 w-2 rounded-full shrink-0 ${statusColors[agent.status]}`}
+          className={`h-2 w-2 rounded-full shrink-0 ${STATUS_COLORS[agent.status]}`}
         />
         <span className={`${pixelFontClass} text-[8px] uppercase`}>
           {agent.name}
@@ -140,7 +101,7 @@ function AgentRoom({ agent, pixelFontClass }: { agent: AgentStatus; pixelFontCla
         {isWorking || isError ? (
           <>
             <PixelAvatar
-              agent={agent.id as AgentIdType}
+              agent={agent.id as AgentId}
               status={agent.status}
               size={64}
             />
@@ -177,7 +138,7 @@ function BreakRoom({
           idleAgents.map((agent) => (
             <div key={agent.id} className="flex flex-col items-center gap-1">
               <PixelAvatar
-                agent={agent.id as AgentIdType}
+                agent={agent.id as AgentId}
                 status="idle"
                 size={48}
               />
@@ -353,7 +314,7 @@ export default function ActivityPage() {
                 <Card key={agent.id} className="p-3">
                   <div className="flex items-start gap-2">
                     <div
-                      className={`h-2.5 w-2.5 rounded-full mt-1 shrink-0 ${statusColors[agent.status]}`}
+                      className={`h-2.5 w-2.5 rounded-full mt-1 shrink-0 ${STATUS_COLORS[agent.status]}`}
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">

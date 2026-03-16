@@ -1,8 +1,7 @@
 "use client"
 
-import React from "react"
+import type { AgentId } from "@/types/activity"
 
-type AgentId = "main" | "builder" | "content" | "atlas"
 type AvatarStatus = "working" | "idle" | "error" | "offline"
 
 interface PixelAvatarProps {

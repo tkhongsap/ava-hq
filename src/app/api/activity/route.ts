@@ -1,40 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import fs from "fs"
 import path from "path"
+import type { AgentStatus, ActivityEvent, TeamOverviewResponse } from "@/types/activity"
 
 const AGENTS_DIR = "/data/.openclaw/agents"
 const ACTIVE_THRESHOLD_MS = 5 * 60 * 1000 // 5 minutes
-
-interface AgentStatus {
-  id: string
-  name: string
-  role: string
-  status: "working" | "idle" | "error" | "offline"
-  currentTask?: string
-  location: "desk" | "breakroom" | "conference"
-  lastActive: string
-}
-
-interface ActivityEvent {
-  id: string
-  timestamp: string
-  agent: string
-  type: "start" | "complete" | "error" | "info"
-  message: string
-  durationMs?: number
-}
-
-interface TeamOverviewResponse {
-  agents: AgentStatus[]
-  events: ActivityEvent[]
-  stats: {
-    completed: number
-    running: number
-    failed: number
-    avgDurationMs: number
-  }
-  serverTime: string
-}
 
 const AGENT_MAP: Record<string, { name: string; role: string }> = {
   main: { name: "Ava", role: "Orchestrator" },

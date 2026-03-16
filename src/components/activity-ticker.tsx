@@ -1,15 +1,6 @@
 "use client"
 
-import React from "react"
-
-interface ActivityEvent {
-  id: string
-  timestamp: string
-  agent: string
-  type: "start" | "complete" | "error" | "info"
-  message: string
-  durationMs?: number
-}
+import type { ActivityEvent } from "@/types/activity"
 
 const AGENT_NAMES: Record<string, string> = {
   main: "Ava",
@@ -30,7 +21,7 @@ export function ActivityTicker({ events }: { events: ActivityEvent[] }) {
     return (
       <div className="w-full bg-card border-t border-border px-4 py-3 text-center">
         <p className="text-xs text-muted-foreground">
-          No activity in the last 76 hours
+          No recent activity
         </p>
       </div>
     )
